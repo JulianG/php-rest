@@ -8,7 +8,7 @@ This is a work in progress. The framework is still missing a lot of features. I'
 
 ## Usage
 
-Don't forget to add or edit your .htaccess file that will "catch" and send all requests to index.php
+Don't forget to add or edit your .htaccess file. This will "catch" and send all requests to index.php
 
 	DirectoryIndex index.php
 	<IfModule mod_rewrite.c>

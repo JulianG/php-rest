@@ -48,3 +48,20 @@ Here's a sample index.php:
 	// Finally, don't forget to call the start method.
 	$rest -> start();
 	?>
+	
+### Catching Errors
+
+If you callback functions throw an Exception, the exception code will be used as http status code, and the exception message will be sent in the body.
+For instance, if you want to indicate that a specific resource is not found, you can simply throw an exception like this:
+
+	throw( new Exception('user not found', 404) );
+	
+The framework will send the appropiate http status code (404) and your message will be sent in the body.
+
+The same applies if you want to indicate that a bad request, you can throw a 400 exception:
+
+	throw( new Exception('username and password are required', 400) );
+
+### Parse Errors and Fatal Errors
+
+Parse errors and fatal errors aren't being catched yet. I need to figure out how to do it. MySQL errors are caught and sent as error 500.

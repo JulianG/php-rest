@@ -1,6 +1,6 @@
 <?php
 
-class Binder{
+class Binder {
 
 	private $bindings;
 
@@ -13,11 +13,17 @@ class Binder{
 		array_push($this -> bindings, Array('method' => $method, 'path' => $path, 'callback' => $callback));
 	}
 
-	public function process($req, $res) {
+	public function process(Request $req, Response $res) {
 		$req -> method = strtoupper($req -> method);
 		$bindings = $this -> getMatchingBindings($req);
 		foreach ($bindings as $b) {
-			$b['callback']($b['req'], $res);
+			try {
+				$b['callback']($b['req'], $res);
+			} catch( Exception $e) {
+				$res->status = $e->getCode();
+				$res->body = $e->getMessage();
+				$res->exception = $e;
+			}
 		}
 	}
 

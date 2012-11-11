@@ -3,8 +3,9 @@
 class Response {
 
 	public $status;
-	public $body;
 	public $headers;
+	public $body;
+	public $exception;
 
 	public function Response() {
 		$this -> status = 200;
@@ -17,6 +18,13 @@ class Response {
 
 	public function clearHeaders() {
 		$this -> headers = Array();
+	}
+
+	public function getBodyString() {
+		if (is_string($this -> body))
+			return $this -> body;
+		//
+		return json_encode($this -> body);
 	}
 
 }

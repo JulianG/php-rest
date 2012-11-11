@@ -10,6 +10,8 @@ class Rest {
 	private $response;
 
 	private $binder;
+	
+	public $contentType = 'application/json';
 
 	public function Rest($path_prefix) {
 		$this -> binder = new Binder();
@@ -29,16 +31,23 @@ class Rest {
 	}
 
 	private function sendStatus() {
-		http_response_code( $this->response->status);
+		http_response_code($this -> response -> status);
 	}
+
 	private function sendHeaders() {
 		$headers = $this -> response -> headers;
 		foreach ($headers as $header) {
-			header( $header );
+			header($header);
 		}
+		header('Content-type: ' . $this->contentType);
 	}
+
 	private function sendBody() {
-		echo $this->response->body;
+		if ($this -> response -> exception != NULL && $this -> response -> status >= 500 && $this -> response -> status < 600) {
+			echo $this -> response -> exception;
+		} else {
+			echo $this -> response -> getBodyString();
+		}
 	}
 
 }

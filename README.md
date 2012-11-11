@@ -64,4 +64,4 @@ The same applies if you want to indicate that a bad request, you can throw a 400
 
 ### Parse Errors and Fatal Errors
 
-Parse errors and fatal errors aren't being catched yet. I need to figure out how to do it. MySQL errors are caught and sent as error 500.
+Parse errors and fatal errors aren't being caught yet. I need to figure out how to do it. MySQL errors are caught and sent as error 500.

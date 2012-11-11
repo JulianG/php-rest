@@ -51,7 +51,7 @@ Here's a sample index.php:
 	
 ### Catching Errors
 
-If you callback functions throw an Exception, the exception code will be used as http status code, and the exception message will be sent in the body.
+If you throw an Exception in callback function, the exception code will be used as http status code, and the exception message will be sent in the body.
 For instance, if you want to indicate that a specific resource is not found, you can simply throw an exception like this:
 
 	throw( new Exception('user not found', 404) );

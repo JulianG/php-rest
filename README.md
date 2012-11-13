@@ -48,7 +48,9 @@ Here's a sample index.php:
 	});
 
 	// Finally, don't forget to call the start method.
-	$rest -> start();
+	$rest -> process();
+	// you can fiddle with $rest->response here, but I don't recommend it.
+	$rest -> sendResponse();
 	?>
 	
 ### Catching Errors

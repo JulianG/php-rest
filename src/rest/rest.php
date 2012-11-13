@@ -36,6 +36,9 @@ class Rest {
 		}
 	}
 
+	/**
+	 * Sends the status code, headers and body
+	 */
 	public function sendResponse() {
 		$this -> sendStatus();
 		$this -> sendHeaders();

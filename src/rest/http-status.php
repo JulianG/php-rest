@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 function getHTTPStatusText( $status_code )
 {

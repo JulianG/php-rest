@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class Response {
 
@@ -21,10 +21,7 @@ class Response {
 	}
 
 	public function getBodyString() {
-		if (is_string($this -> body))
-			return $this -> body;
-		//
-		return json_encode($this -> body);
+		return (json_encode($this -> body));
 	}
 
 }

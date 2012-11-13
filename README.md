@@ -30,6 +30,8 @@ Here's a sample index.php:
 
 	// Create an instance.
 	$rest = new Rest('/api/');
+	
+	$rest -> debugMode = false; // remember to remove this in production environments 
 
 	// Bind as many paths as you like.
 	$rest -> bind('get', 'users/', function($req, $res) {

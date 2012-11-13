@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class Binder {
 
@@ -16,14 +16,14 @@ class Binder {
 	public function process(Request $req, Response $res) {
 		$req -> method = strtoupper($req -> method);
 		$bindings = $this -> getMatchingBindings($req);
-		foreach ($bindings as $b) {
-			try {
+		if (count($bindings) > 0) {
+			foreach ($bindings as $b) {
+				// each match generates a different list of parameters
+				$req -> params = $b['params'];
 				$b['callback']($b['req'], $res);
-			} catch( Exception $e) {
-				$res->status = $e->getCode();
-				$res->body = $e->getMessage();
-				$res->exception = $e;
 			}
+		} else {
+			throw new Exception('Not Found', 404);
 		}
 	}
 
@@ -32,8 +32,8 @@ class Binder {
 		foreach ($this->bindings as $binding) {
 			if ($binding['method'] == "ALL" || $binding['method'] == $req -> method) {
 				$params = $this -> getMatchingParams($binding['path'], $req -> path);
-				if ($params != NULL) {
-					$req -> params = $params;
+				if ($params !== NULL) {
+					$binding['params'] = $params;
 					$binding['req'] = $req;
 					array_push($list, $binding);
 				}
@@ -44,11 +44,12 @@ class Binder {
 
 	private function getMatchingParams($expression, $path) {
 		$params = Array();
-		$expression_parts = explode('/', $expression);
-		$path_parts = explode('/', $path);
+		$expression_parts = $this -> removeEmptyStrings(explode('/', $expression));
+		$path_parts = $this -> removeEmptyStrings(explode('/', $path));
 		$ok = true;
 		if (count($expression_parts) == count($path_parts)) {
 			for ($i = 0; $i < count($expression_parts) && $ok; $i++) {
+
 				if (substr($expression_parts[$i], 0, 1) == ":") {
 					$key = substr($expression_parts[$i], 1);
 					$params[$key] = $path_parts[$i];
@@ -56,6 +57,8 @@ class Binder {
 					if ($expression_parts[$i] != $path_parts[$i]) {
 						$ok = false;
 						$params = NULL;
+					} else {
+						$params = Array();
 					}
 				}
 			}
@@ -63,6 +66,15 @@ class Binder {
 			$params = NULL;
 		}
 		return $params;
+	}
+
+	private function removeEmptyStrings($array) {
+		$new_array = Array();
+		foreach ($array as $item) {
+			if ($item != '')
+				array_push($new_array, $item);
+		}
+		return $new_array;
 	}
 
 }

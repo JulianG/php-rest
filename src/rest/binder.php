@@ -33,7 +33,10 @@ class Binder {
 			if ($binding['method'] == "ALL" || $binding['method'] == $req -> method) {
 				$params = $this -> getMatchingParams($binding['path'], $req -> path);
 				if ($params !== NULL) {
-					$binding['params'] = $params;
+					$binding['params'] = Array();
+					foreach ($params as $key => $val) {
+						$binding['params'][$key] = $val;
+					}
 					$binding['req'] = $req;
 					array_push($list, $binding);
 				}
@@ -49,7 +52,6 @@ class Binder {
 		$ok = true;
 		if (count($expression_parts) == count($path_parts)) {
 			for ($i = 0; $i < count($expression_parts) && $ok; $i++) {
-
 				if (substr($expression_parts[$i], 0, 1) == ":") {
 					$key = substr($expression_parts[$i], 1);
 					$params[$key] = $path_parts[$i];
@@ -58,7 +60,7 @@ class Binder {
 						$ok = false;
 						$params = NULL;
 					} else {
-						$params = Array();
+						//$params = Array();
 					}
 				}
 			}

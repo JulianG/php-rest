@@ -1,8 +1,9 @@
-﻿<?php
-
-require_once ('./rest/request.php');
-require_once ('./rest/response.php');
-require_once ('./rest/binder.php');
+<?php
+$path = realpath(dirname(__FILE__)) . '/';
+require_once ($path . 'http-status.php');
+require_once ($path . 'request.php');
+require_once ($path . 'response.php');
+require_once ($path . 'binder.php');
 
 class Rest {
 
@@ -45,8 +46,11 @@ class Rest {
 		$this -> sendBody();
 	}
 
-	private function sendStatus() {
-		http_response_code(1 * $this -> response -> status);
+	private function sendStatus() {		
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		$status_code = (int) $this -> response -> status;
+		$status_text = getHTTPStatusText( $status_code );
+		header($protocol . ' ' . $status_code . ' ' . $status_text); 
 	}
 
 	private function sendHeaders() {

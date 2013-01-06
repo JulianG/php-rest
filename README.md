@@ -1,6 +1,6 @@
 # PHP-Rest
 
-ExpressJS-inspired web application framework for PHP.
+ExpressJS-inspired web application mini-framework for PHP.
 
 ## Work-in-progress
 

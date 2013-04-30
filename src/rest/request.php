@@ -6,6 +6,7 @@ class Request {
 	public $path;
 	public $params;
 	public $body;
+	public $query;
 	public $headers;
 
 	private $pathPrefix;
@@ -20,6 +21,7 @@ class Request {
 		$this -> path = $this -> getPath();
 		$this -> headers = $this -> getHeaders();
 		$this -> body = $_POST;
+		$this -> query = $_GET;
 	}
 
 	private function getMethod() {

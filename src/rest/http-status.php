@@ -39,10 +39,12 @@ function getHTTPStatusText($status_code) {
 	$codes['503'] = 'Service Unavailable';
 	$codes['504'] = 'Gateway Time-out';
 	$codes['505'] = 'HTTP Version not supported';
-	
-	$rsp = $codes[$status_code];
-	if (!$rsp)
+
+	if (isset($codes["" . $status_code])) {
+		$rsp = $codes["" . $status_code];
+	} else {
 		$rsp = '';
+	}
 
 	return $rsp;
 }

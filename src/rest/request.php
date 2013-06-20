@@ -15,13 +15,43 @@ class Request {
 		$this -> pathPrefix = $path_prefix;
 		$this -> init();
 	}
+	
+	public function getParam( $key ) {
+		if (!array_key_exists($key, $this->params)) {
+			throw( new Exception('Missing parameter ' . $key, 400) );
+		} 
+		return $this->params[$key];
+	}
+	
+	public function getBodyParam( $key ) {
+		if (!array_key_exists($key, $this->body)) {
+			throw( new Exception("Missing body parameter '" . $key . "'", 400) );
+		} 
+		return $this->body[$key];
+	}
+	
+	public function getHeader( $key ) {
+		if (!array_key_exists($key, $this->headers)) {
+			throw( new Exception('Missing header ' . $key, 400) );
+		} 
+		return $this->headers[$key];
+	}
+	
+	///////////////////////////////
+	///////////////////////////////
+	///////////////////////////////
 
 	private function init() {
 		$this -> method = $this -> getMethod();
 		$this -> path = $this -> getPath();
 		$this -> headers = $this -> getHeaders();
-		$this -> body = $_POST;
 		$this -> query = $_GET;
+		if($this->method=='POST'){
+			$this -> body = $_POST;
+		}else {
+			$this->body = Array();
+			parse_str(file_get_contents("php://input"),$this->body);
+		}
 	}
 
 	private function getMethod() {

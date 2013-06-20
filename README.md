@@ -31,26 +31,45 @@ Here's a sample index.php:
 	// Create an instance.
 	$rest = new Rest('/api/');
 	
-	$rest -> debugMode = false; // remember to remove this in production environments 
+	$rest->debugMode = false; // remove this in production
 
 	// Bind as many paths as you like.
-	$rest -> bind('get', 'users/', function($req, $res) {
-		$res -> status = 200;
-		$res -> body = 'here you can list all users';
+	$rest->bind('get', 'users/', function(Request $req, Response $res) {
+		$res->status = 200;
+		$res->body = 'here you can list all users';
 	});
-	$rest -> bind('get', 'users/:uid', function($req, $res) {
-		$res -> status = 200;
-		$res -> body = 'here you can return user with uid: ' . $req->params['uid'];
+	$rest->bind('get', 'users/:uid', function(Request $req, Response $res) {
+		$res->status = 200;
+		$res->body = 'here you can return user with uid: ' . $req->getParam('uid');
 	});
-	$rest -> bind('get', 'users/:uid/follower/:fid', function($req, $res) {
-		$res -> status = 200;
-		$res -> body = 'here you can return follower fid:' . $req->params['fid'] . ' of user uid:' . $req->params['uid'];
+	$rest->bind('get', 'users/:uid/follower/:fid', function(Request $req, Response $res) {
+		$res->status = 200;
+		$res->body = 'here you can return follower fid:' . $req->getParam('fid') . ' of user uid:' . $req->getParam('uid');
 	});
 
-	// Finally, don't forget to call the start method.
-	$rest -> process();
-	// you can fiddle with $rest->response here, but I don't recommend it.
-	$rest -> sendResponse();
+	$rest->bind('post', 'users/', function(Request $req, Response $res) {
+		$name = $req->getBodyParam('name');
+		$email = $req->getBodyParam('email');
+		$password = $req->getBodyParam('password');
+		$user_id = createUser($name, $email, $password);
+		$res->status = 201; // 201 - created
+		$res->body = $user_id;
+	});
+
+	$rest->bind('put', 'users/:uid', function(Request $req, Response $res) {
+		$id = $req->getParam('uid');
+		$name = $req->getBodyParam('name');
+		$email = $req->getBodyParam('email');
+		$password = $req->getBodyParam('password');
+		$ok = updateUser($id, $name, $email, $password);
+		$res->status = 200;
+		$res->body = $ok;
+	});
+
+	// Finally, we call the process method.
+	$rest->process();
+	// here you can modify the $rest->response before it's sent, but I don't recommend it.
+	$rest->sendResponse();
 	?>
 	
 ### Catching Errors
@@ -62,10 +81,24 @@ For instance, if you want to indicate that a specific resource is not found, you
 	
 The framework will send the appropiate http status code (404) and your message will be sent in the body.
 
-The same applies if you want to indicate that a bad request, you can throw a 400 exception:
+The same applies if you want to indicate a bad request, you can throw a 400 exception:
 
-	throw( new Exception('username and password are required', 400) );
+	throw( new Exception('email and address are required', 400) );
 
 ### Parse Errors and Fatal Errors
 
 Parse errors and fatal errors aren't being caught yet. I need to figure out how to do it. MySQL errors are caught and sent as error 500.
+
+### PHP v5.2 and older ###
+
+The example above use anonymous functions or closures, but those are anoly available since PHP v5.3.0. If you're running an older version of PHP you can do something like this:
+
+	function _listBananas(Request $req, Response $res) {
+		$res->status = 200;
+		$res->body = Array(...); // list of bananas
+	}
+	$rest->bind('get', 'bananas/', '_listBananas');
+
+---------------------------
+Updated 2013-06-20
+

@@ -5,6 +5,11 @@ require_once ($path . 'request.php');
 require_once ($path . 'response.php');
 require_once ($path . 'binder.php');
 
+function handleError($errno, $errstr, $errfile, $errline, array $errcontext)
+{
+    throw new ErrorException($errstr . ' ' . $errno , $errno, 0, $errfile, $errline);
+}	
+
 class Rest {
 
 	public $debugMode = false;
@@ -28,6 +33,7 @@ class Rest {
 	}
 
 	public function process() {
+		set_error_handler('handleError');
 		try {
 			$this -> binder -> process($this -> request, $this -> response);
 		} catch( Exception $e) {
@@ -35,6 +41,7 @@ class Rest {
 			$this -> response -> body = ($this -> debugMode) ? $e -> getMessage() : 'Internal Server Error.';
 			$this -> response -> exception = $e;
 		}
+		restore_error_handler();
 	}
 
 	/**
